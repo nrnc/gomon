@@ -1,0 +1,7 @@
+.idea
+database.yml
+schema.sql
+run.sh
+gomon
+.DS_Store
+.vscode
