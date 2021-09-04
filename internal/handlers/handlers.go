@@ -135,6 +135,15 @@ func (repo *DBRepo) Host(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// PostHost post the host add/edit host form
+func (repo *DBRepo) PostHost(w http.ResponseWriter, r *http.Request) {
+	// err := helpers.RenderPage(w, r, "host", nil, nil)
+	// if err != nil {
+	// 	printTemplateError(w, err)
+	// }
+	w.Write([]byte("Host form poseted"))
+}
+
 // AllUsers lists all admin users
 func (repo *DBRepo) AllUsers(w http.ResponseWriter, r *http.Request) {
 	vars := make(jet.VarMap)
