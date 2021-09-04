@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/CloudyKit/jet/v6"
 	"github.com/go-chi/chi"
@@ -134,7 +135,6 @@ func (repo *DBRepo) Host(w http.ResponseWriter, r *http.Request) {
 	if id > 0 {
 		// get the host from db
 	}
-	host.HostName = "Soem Host"
 	vars := make(jet.VarMap)
 	vars.Set("host", host)
 	err := helpers.RenderPage(w, r, "host", vars, nil)
@@ -149,7 +149,38 @@ func (repo *DBRepo) PostHost(w http.ResponseWriter, r *http.Request) {
 	// if err != nil {
 	// 	printTemplateError(w, err)
 	// }
-	w.Write([]byte("Host form poseted"))
+	err := r.ParseForm()
+	if err != nil {
+		log.Println(err)
+		helpers.ServerError(w, r, err)
+		return
+	}
+	id, _ := strconv.Atoi(chi.URLParam(r, "id"))
+	var host models.Host
+	if id > 0 {
+		// get from the database
+	} else {
+		host.HostName = r.Form.Get("host_name")
+		host.CanonicalName = r.Form.Get("canonical_name")
+		host.URL = r.Form.Get("url")
+		host.IP = r.Form.Get("ip")
+		host.IPV6 = r.Form.Get("ipv6")
+		host.Active, _ = strconv.Atoi(r.Form.Get("active"))
+		host.Location = r.Form.Get("location")
+		host.OS = r.Form.Get("os")
+		host.CreatedAt = time.Now()
+		host.UpdatedAt = time.Now()
+
+		newID, err := repo.DB.InsertHost(host)
+		if err != nil {
+			log.Println(err)
+			helpers.ServerError(w, r, err)
+			return
+		}
+		host.ID = newID
+	}
+	repo.App.Session.Put(r.Context(), "flash", "Changes Saved")
+	http.Redirect(w, r, fmt.Sprintf("/admin/host/%d", host.ID), http.StatusSeeOther)
 }
 
 // AllUsers lists all admin users
