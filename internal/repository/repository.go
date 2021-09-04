@@ -20,6 +20,9 @@ type DatabaseRepo interface {
 	InsertRememberMeToken(id int, token string) error
 	DeleteToken(token string) error
 	CheckForToken(id int, token string) bool
+
+	// hosts
 	InsertHost(host models.Host) (int, error)
 	GetHostByID(id int) (models.Host, error)
+	UpdateHost(host models.Host) error
 }

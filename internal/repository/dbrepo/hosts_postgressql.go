@@ -40,12 +40,13 @@ func (m *postgresDBRepo) GetHostByID(id int) (models.Host, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 	query := `
-				select host_name,canonical_name,url,ip,ipv6,location,os,active,created_at,updated_at
+				select id,host_name,canonical_name,url,ip,ipv6,location,os,active,created_at,updated_at
 				from hosts
 				where id = $1
 	`
 	var host models.Host
 	err := m.DB.QueryRowContext(ctx, query, id).Scan(
+		&host.ID,
 		&host.HostName,
 		&host.CanonicalName,
 		&host.URL,
@@ -63,4 +64,44 @@ func (m *postgresDBRepo) GetHostByID(id int) (models.Host, error) {
 	}
 
 	return host, nil
+}
+
+func (m *postgresDBRepo) UpdateHost(host models.Host) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	query := `
+			update hosts
+			set
+			host_name = $2,
+			canonical_name = $3,
+			url = $4,
+			ip = $5,
+			ipv6 = $6,
+			location = $7,
+			os = $8,
+			active = $9,
+			created_at = $10,
+			updated_at = $11
+			where id = $1
+	`
+
+	_, err := m.DB.QueryContext(ctx, query,
+		host.ID,
+		host.HostName,
+		host.CanonicalName,
+		host.URL,
+		host.IP,
+		host.IPV6,
+		host.Location,
+		host.OS,
+		host.Active,
+		host.CreatedAt,
+		host.UpdatedAt,
+	)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

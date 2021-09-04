@@ -165,19 +165,34 @@ func (repo *DBRepo) PostHost(w http.ResponseWriter, r *http.Request) {
 	id, _ := strconv.Atoi(chi.URLParam(r, "id"))
 	var host models.Host
 	if id > 0 {
+		// get the host from the database
+		h, err := repo.DB.GetHostByID(id)
+		if err != nil {
+			log.Println(err)
+			return
+		}
+		host = h
+	}
+	host.ID = id
+	host.HostName = r.Form.Get("host_name")
+	host.CanonicalName = r.Form.Get("canonical_name")
+	host.URL = r.Form.Get("url")
+	host.IP = r.Form.Get("ip")
+	host.IPV6 = r.Form.Get("ipv6")
+	host.Active, _ = strconv.Atoi(r.Form.Get("active"))
+	host.Location = r.Form.Get("location")
+	host.OS = r.Form.Get("os")
+	host.CreatedAt = time.Now()
+	host.UpdatedAt = time.Now()
+	if id > 0 {
 		// get from the database
+		err := repo.DB.UpdateHost(host)
+		if err != nil {
+			log.Println(err)
+			helpers.ServerError(w, r, err)
+			return
+		}
 	} else {
-		host.HostName = r.Form.Get("host_name")
-		host.CanonicalName = r.Form.Get("canonical_name")
-		host.URL = r.Form.Get("url")
-		host.IP = r.Form.Get("ip")
-		host.IPV6 = r.Form.Get("ipv6")
-		host.Active, _ = strconv.Atoi(r.Form.Get("active"))
-		host.Location = r.Form.Get("location")
-		host.OS = r.Form.Get("os")
-		host.CreatedAt = time.Now()
-		host.UpdatedAt = time.Now()
-
 		newID, err := repo.DB.InsertHost(host)
 		if err != nil {
 			log.Println(err)
