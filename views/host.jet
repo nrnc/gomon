@@ -66,32 +66,32 @@ Host
                             </div>
                             <div class="mb-3">
                                     <label for="canonical_name" class="form-label">Canonical Name</label>
-                                    <input required type="text" id="canonical_name" name="canonical_name" class="form-control">
+                                    <input required type="text" id="canonical_name" name="canonical_name" class="form-control" value="{{host.CanonicalName}}">
                                 </div>
                             <div class="mb-3">
                                     <label for="url" class="form-label">URL</label>
-                                    <input required type="text" id="url" name="url" class="form-control">
+                                    <input required type="text" id="url" name="url" class="form-control" value="{{host.URL}}">
                             </div>
                             <div class="mb-3">
                                     <label for="ip" class="form-label">IP Address (v4)</label>
-                                    <input type="text" id="ip" name="ip" class="form-control">
+                                    <input type="text" id="ip" name="ip" class="form-control" value="{{host.IP}}">
                             </div>
                             <div class="mb-3">
                                     <label for="ipv6" class="form-label">IP Address (v6)</label>
-                                    <input type="text" id="ipv6" name="ipv6" class="form-control">
+                                    <input type="text" id="ipv6" name="ipv6" class="form-control" value="{{host.IPV6}}">
                             </div>
                         </div>
                         <div class="col-md-6 col-xs-12">
                             <div class="mt-3 mb-3">
                                     <label for="location" class="form-label">Location</label>
-                                    <input type="text" id="location" name="location" class="form-control">
+                                    <input type="text" id="location" name="location" class="form-control" value="{{host.Location}}">
                             </div>
                             <div class="mb-3">
                                     <label for="os" class="form-label">Operating System</label>
-                                    <input type="text" id="os" name="os" class="form-control">
+                                    <input type="text" id="os" name="os" class="form-control" value="{{host.OS}}">
                             </div>
                             <div class="mb-3 form-check form-switch">
-                                <input type="checkbox" name="active" id="active" class="form-check-input">
+                                <input type="checkbox" name="active" id="active" class="form-check-input" value="{{host.Active}}">
                                 <label for="active" class="form-check-label">Active</label>
                             </div>
                         </div>
