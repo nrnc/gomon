@@ -7,6 +7,45 @@ import (
 	"github.com/nchukkaio/gomon/internal/models"
 )
 
+func (m *postgresDBRepo) AllHosts() ([]models.Host, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	query := `
+				select id,host_name,canonical_name,url,ip,ipv6,location,os,active,created_at,updated_at
+				from hosts
+	`
+	var hosts []models.Host
+	rows, err := m.DB.QueryContext(ctx, query)
+	if err != nil {
+		return hosts, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var host models.Host
+		rows.Scan(
+			&host.ID,
+			&host.HostName,
+			&host.CanonicalName,
+			&host.URL,
+			&host.IP,
+			&host.IPV6,
+			&host.Location,
+			&host.OS,
+			&host.Active,
+			&host.CreatedAt,
+			&host.UpdatedAt,
+		)
+		hosts = append(hosts, host)
+	}
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return hosts, nil
+}
+
 func (m *postgresDBRepo) InsertHost(host models.Host) (int, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
