@@ -40,6 +40,7 @@ func (m *postgresDBRepo) AllHosts() ([]models.Host, error) {
 		hosts = append(hosts, host)
 	}
 	if err = rows.Err(); err != nil {
+		return nil, err
 	}
 
 	return hosts, nil
