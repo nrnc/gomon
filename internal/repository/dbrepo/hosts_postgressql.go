@@ -152,3 +152,19 @@ func (m *postgresDBRepo) UpdateHost(host models.Host) error {
 
 	return nil
 }
+
+func (m *postgresDBRepo) UpdateHostServiceStatus(serviceID, hostID, active int) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	stmt := `
+				update host_services set active = $1 where service_id = $2 and host_id = $3
+	`
+
+	_, err := m.DB.ExecContext(ctx, stmt, active, serviceID, hostID)
+
+	if err != nil {
+		return err
+	}
+	return nil
+}
