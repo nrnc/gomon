@@ -2,6 +2,7 @@ package dbrepo
 
 import (
 	"context"
+	"log"
 	"time"
 
 	"github.com/nchukkaio/gomon/internal/models"
@@ -110,6 +111,51 @@ func (m *postgresDBRepo) GetHostByID(id int) (models.Host, error) {
 		return host, err
 	}
 
+	var hs []models.HostService
+	query = `
+				select 
+					hs.id,hs.host_id,hs.service_id,hs.active,hs.schedule_number,hs.schedule_unit,hs.last_check,hs.created_at,hs.updated_at,hs.status,
+					s.id,s.service_name,s.active,s.icon,s.created_at,s.updated_at
+				from
+					host_services hs
+				left join services s on (s.id=hs.service_id)
+				where
+					host_id = $1
+	`
+	rows, err := m.DB.QueryContext(ctx, query, host.ID)
+
+	if err != nil {
+		log.Println(err)
+		return host, err
+	}
+	for rows.Next() {
+		var h models.HostService
+		err := rows.Scan(
+			&h.ID,
+			&h.HostID,
+			&h.ServiceID,
+			&h.Active,
+			&h.ScheduleNumber,
+			&h.ScheduleUnit,
+			&h.LastCheck,
+			&h.CreatedAt,
+			&h.UpdatedAt,
+			&h.Status,
+			&h.Service.ID,
+			&h.Service.ServiceName,
+			&h.Active,
+			&h.Service.Icon,
+			&h.Service.CreatedAt,
+			&h.Service.UpdatedAt,
+		)
+
+		if err != nil {
+			return host, err
+		}
+		hs = append(hs, h)
+
+	}
+	host.HostServices = hs
 	return host, nil
 }
 
