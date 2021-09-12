@@ -10,7 +10,15 @@ import (
 
 // AllHealthyServices lists all healthy services
 func (repo *DBRepo) AllHealthyServices(w http.ResponseWriter, r *http.Request) {
-	err := helpers.RenderPage(w, r, "healthy", nil, nil)
+	hostServices, err := repo.DB.GetServicesByStatus("healthy")
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	vars := make(jet.VarMap)
+	vars.Set("hs", hostServices)
+	err = helpers.RenderPage(w, r, "healthy", nil, nil)
 	if err != nil {
 		printTemplateError(w, err)
 	}
@@ -18,7 +26,15 @@ func (repo *DBRepo) AllHealthyServices(w http.ResponseWriter, r *http.Request) {
 
 // AllWarningServices lists all warning services
 func (repo *DBRepo) AllWarningServices(w http.ResponseWriter, r *http.Request) {
-	err := helpers.RenderPage(w, r, "warning", nil, nil)
+	hostServices, err := repo.DB.GetServicesByStatus("warning")
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	vars := make(jet.VarMap)
+	vars.Set("hs", hostServices)
+	err = helpers.RenderPage(w, r, "warning", vars, nil)
 	if err != nil {
 		printTemplateError(w, err)
 	}
@@ -26,7 +42,15 @@ func (repo *DBRepo) AllWarningServices(w http.ResponseWriter, r *http.Request) {
 
 // AllProblemServices lists all problem services
 func (repo *DBRepo) AllProblemServices(w http.ResponseWriter, r *http.Request) {
-	err := helpers.RenderPage(w, r, "problems", nil, nil)
+	hostServices, err := repo.DB.GetServicesByStatus("problem")
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	vars := make(jet.VarMap)
+	vars.Set("hs", hostServices)
+	err = helpers.RenderPage(w, r, "problems", vars, nil)
 	if err != nil {
 		printTemplateError(w, err)
 	}
