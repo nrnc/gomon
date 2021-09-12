@@ -142,7 +142,7 @@ Host
                                                     type="checkbox" 
                                                     {{if .Active==1}}checked{{end}}
                                                     name="{{.Service.ServiceName}}" 
-                                                    class="form-check-input" value="1">
+                                                    class="form-check-input" value="{{.Active}}">
                                                 <label for="active" class="form-check-label">Active</label>
                                             </div>
                                         </td>
@@ -181,6 +181,7 @@ Host
             toggles[i].addEventListener("change", function(){
 
                 let active = "1";
+                console.log(this)
                 if (!this.checked) {
                     active = "0";
                 }

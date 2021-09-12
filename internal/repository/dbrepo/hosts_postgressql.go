@@ -92,6 +92,29 @@ func (m *postgresDBRepo) AllHosts() ([]models.Host, error) {
 	return hosts, nil
 }
 
+func (m *postgresDBRepo) GetAllServicesStatusCount() (int, int, int, int, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	stmt := `
+				select
+					(select count(id) from host_services where active = 1 and status = 'pending') as pending,
+					(select count(id) from host_services where active = 1 and status = 'healthy') as healthy,
+					(select count(id) from host_services where active = 1 and status = 'warning') as warning,
+					(select count(id) from host_services where active = 1 and status = 'problem') as problem
+	`
+	var pending, healthy, warning, problem int
+	row := m.DB.QueryRowContext(ctx, stmt)
+	err := row.Scan(&pending, &healthy, &warning, &problem)
+
+	if err != nil {
+		return 0, 0, 0, 0, err
+	}
+
+	return pending, healthy, warning, problem, nil
+
+}
+
 func (m *postgresDBRepo) InsertHost(host models.Host) (int, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
@@ -188,7 +211,7 @@ func (m *postgresDBRepo) GetHostByID(id int) (models.Host, error) {
 			&h.Status,
 			&h.Service.ID,
 			&h.Service.ServiceName,
-			&h.Active,
+			&h.Service.Active,
 			&h.Service.Icon,
 			&h.Service.CreatedAt,
 			&h.Service.UpdatedAt,
