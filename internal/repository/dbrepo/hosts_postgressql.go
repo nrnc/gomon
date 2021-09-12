@@ -40,7 +40,6 @@ func (m *postgresDBRepo) AllHosts() ([]models.Host, error) {
 		hosts = append(hosts, host)
 	}
 	if err = rows.Err(); err != nil {
-		return nil, err
 	}
 
 	return hosts, nil
@@ -71,7 +70,15 @@ func (m *postgresDBRepo) InsertHost(host models.Host) (int, error) {
 	if err != nil {
 		return newID, err
 	}
-
+	// add host service and set to inactive
+	stmt := `
+				insert into host_services(host_id,service_id,active,schedule_number,schedule_unit,
+				status,created_at,updated_at) values($1,1,0,3,'m','pending',$2,$3)
+	`
+	_, err = m.DB.ExecContext(ctx, stmt, newID, time.Now(), time.Now())
+	if err != nil {
+		return newID, err
+	}
 	return newID, nil
 }
 
