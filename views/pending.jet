@@ -35,9 +35,14 @@
                 </tr>
                 </thead>
                 <tbody>
+                {{range hs}}
                 <tr>
-                    <td colspan="5">No services</td>
+                    <td><a href="/admin/host/{{.HostID}}#pending-content">{{.HostName}}</a></td>
+                    <td>{{.Service.ServiceName}}</td>
+                    <td><span class="badge bg-dark">{{.Status}}</span></td>
+                    <td></td>
                 </tr>
+                {{end}}
                 </tbody>
             </table>
         </div>

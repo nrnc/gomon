@@ -53,6 +53,10 @@ Host
                     <a class="nav-link" href="#problem-content" data-target="" data-toggle="tab"
                     id="problem-tab" role="tab">Problem</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#pending-content" data-target="" data-toggle="tab"
+                    id="peding-tab" role="tab">Pending</a>
+                </li>
                 {{end}}
             </ul>
             <div class="tab-content" id="host-tab-content" style="min-height: 55vh">
@@ -164,6 +168,10 @@ Host
                 <div class="tab-pane fade show" role="tabpanel" aria-labelledby="problem-tab"
                             id="problem-content">
                     problem Content
+                </div>
+                <div class="tab-pane fade show" role="tabpanel" aria-labelledby="pending-tab"
+                            id="pending-content">
+                    Pending Content
                 </div>
                 {{end}}
             </div>
